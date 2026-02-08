@@ -23,17 +23,14 @@
             <h3><i class="fa-solid fa-sliders"></i> 학습 조건 설정</h3>
             <label>단과대학</label>
             <select id="collegeSelect" onchange="updateMajors()"><option value="">선택하세요</option></select>
-            
             <label>학과</label>
             <select id="majorSelect" onchange="generatePrompt()"><option value="">선택하세요</option></select>
-            
             <label>문법 주제</label>
             <select id="grammarSelect" onchange="generatePrompt()">
                 <option value="Passive Voice">수동태 (Passive Voice)</option>
                 <option value="Relative Clauses">관계대명사</option>
                 <option value="To-Infinitive">To 부정사</option>
             </select>
-            
             <label>키워드</label>
             <input type="text" id="keyword" placeholder="예: 데이터, 세포..." oninput="generatePrompt()">
         </div>
@@ -49,6 +46,7 @@
         <a href="generator.html" class="b-item active"><i class="fa-solid fa-wand-magic-sparkles"></i> 생성</a>
         <a href="submission.html" class="b-item"><i class="fa-solid fa-file-pen"></i> 제출</a>
         <a href="quiz.html" class="b-item"><i class="fa-solid fa-layer-group"></i> Quiz</a>
+        <a href="textbook.html" class="b-item"><i class="fa-solid fa-book"></i> 교재</a>
     </nav>
 
     <script src="script.js"></script>

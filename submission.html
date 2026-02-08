@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>과제 제출</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a href="index.html" class="home-btn"><i class="fa-solid fa-house"></i></a>
+        <nav class="nav-links">
+            <a href="generator.html" class="nav-link">생성기</a>
+            <a href="submission.html" class="nav-link active">과제제출</a>
+            <a href="quiz.html" class="nav-link">Quiz</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="week-list-view">
+            <h3><i class="fa-solid fa-list-check"></i> 주차별 과제 강의실</h3>
+            <div class="week-grid" id="weekGrid"></div>
+        </div>
+
+        <div id="assignment-detail-view" style="display:none;">
+            <button onclick="backToWeekList()" style="background:none; border:none; cursor:pointer; margin-bottom:15px; font-size:1rem;">
+                <i class="fa-solid fa-arrow-left"></i> 목록으로
+            </button>
+            <div class="panel">
+                <h2 id="currentWeekTitle" style="color:var(--primary); margin-top:0;">Week X</h2>
+                <p style="background:#f0f7ff; padding:15px; border-radius:8px;">
+                    주제: <span id="currentWeekTopic" style="font-weight:bold;"></span><br>
+                    생성한 예문을 아래 댓글창에 제출하세요.
+                </p>
+                <div class="giscus-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="generator.html" class="b-item"><i class="fa-solid fa-wand-magic-sparkles"></i> 생성</a>
+        <a href="submission.html" class="b-item active"><i class="fa-solid fa-file-pen"></i> 제출</a>
+        <a href="quiz.html" class="b-item"><i class="fa-solid fa-layer-group"></i> Quiz</a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>

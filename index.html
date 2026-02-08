@@ -3,487 +3,327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Major-Specific AI Grammar</title>
+    <title>KSNU AI Major Grammar</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- CSS 변수 및 기본 설정 --- */
+        /* --- 공통 스타일 --- */
         :root {
-            --primary: #2c3e50; /* 대학 느낌의 네이비 */
-            --accent: #3498db;  /* 포인트 블루 */
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #2c3e50;
-            --border: #e9ecef;
+            --primary: #002c5f; /* KSNU 국립군산대 느낌의 네이비 */
+            --accent: #2c82c9;  /* 밝은 블루 */
+            --bg: #f5f7fa;
+            --text: #333;
         }
 
         * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Pretendard', sans-serif; background: var(--bg); color: var(--text); }
 
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
+        /* --- 화면 전환 로직 --- */
+        .page-section { display: none; height: 100vh; overflow-y: auto; }
+        .page-section.active { display: block; }
+
+        /* --- 1. 메인 홈 화면 (랜딩 페이지) --- */
+        .hero-container {
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #004e92 100%);
+            color: white;
             min-height: 100vh;
         }
 
-        /* --- 상단 네비게이션 --- */
-        header {
+        .project-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .hero-title { font-size: 2.5rem; font-weight: 700; margin: 0 0 15px 0; line-height: 1.2; }
+        .hero-subtitle { font-size: 1.1rem; opacity: 0.9; margin-bottom: 40px; max-width: 600px; }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            color: var(--text);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card h3 { color: var(--primary); margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        
+        .start-btn {
+            background: white;
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 15px 50px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .start-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+
+        /* --- 2. 앱 화면 (기존 기능) --- */
+        .app-header {
             background: white;
             padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #ddd;
             position: sticky;
             top: 0;
             z-index: 100;
         }
-
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-tabs {
-            display: flex;
-            gap: 5px;
-            background: #f1f3f5;
-            padding: 5px;
-            border-radius: 10px;
-        }
-
-        .nav-btn {
-            border: none;
-            background: none;
-            padding: 8px 16px;
-            border-radius: 7px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            font-weight: 600;
-            color: #868e96;
-            transition: all 0.2s;
-        }
-
-        .nav-btn.active {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        /* --- 메인 컨텐츠 영역 --- */
-        main {
-            flex: 1;
-            padding: 20px;
-            max-width: 800px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .screen { display: none; animation: fadeIn 0.3s ease; }
-        .screen.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- 1. 프롬프트 생성기 (핵심 기능) --- */
-        .control-panel {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .select-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 0.95rem;
-        }
-
-        .prompt-box {
-            background: #2d3436;
-            color: #dfe6e9;
-            padding: 20px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            position: relative;
-            margin-top: 15px;
-            white-space: pre-wrap;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .action-btn {
-            background: var(--primary);
-            color: white;
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
         
-        .action-btn:hover { background: #1a252f; }
-
-        /* --- 2. 과제 제출 (Giscus) --- */
-        .submission-area {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .guide-text {
-            background: #e3f2fd;
-            color: #1565c0;
-            padding: 15px;
+        .home-btn { border: none; background: none; font-size: 1.2rem; cursor: pointer; color: var(--primary); }
+        .nav-tabs { display: flex; gap: 5px; }
+        .nav-tab {
+            padding: 8px 12px;
+            border: none;
+            background: #eee;
             border-radius: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        /* --- 3. 모바일 복습 앱 (카드 UI) --- */
-        .flashcard-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .flashcard {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 5px solid var(--accent);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .flashcard:active { transform: scale(0.98); }
-
-        .card-tag {
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 5px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .card-content {
-            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 10px;
+            color: #777;
         }
+        .nav-tab.active { background: var(--primary); color: white; }
 
-        .card-answer {
-            display: none;
-            color: var(--accent);
-            font-size: 0.95rem;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #eee;
-        }
+        .app-content { max-width: 800px; margin: 0 auto; padding: 20px; }
         
-        .flashcard.flipped .card-answer { display: block; }
+        .tool-screen { display: none; }
+        .tool-screen.active { display: block; }
 
-        /* --- 하단 모바일 네비게이션 (앱 느낌) --- */
-        .mobile-fab {
+        /* 컨트롤 패널 스타일 */
+        .panel { background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 20px; }
+        select, input { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 6px; }
+        .prompt-box { background: #222; color: #eee; padding: 15px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 0.9rem; }
+        .copy-btn { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        /* 모바일 네비게이션 */
+        .bottom-nav {
             display: none;
+            position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #ddd;
+            justify-content: space-around; padding: 10px 0;
         }
+        .b-item { border: none; background: none; display: flex; flex-direction: column; align-items: center; font-size: 0.8rem; color: #888; }
+        .b-item.active { color: var(--primary); }
 
-        /* 반응형: 모바일 화면 */
         @media (max-width: 600px) {
-            header { padding: 10px 15px; }
-            .nav-tabs { display: none; } /* 상단 탭 숨김 */
-            
-            /* 하단 고정 탭바 */
-            .bottom-nav {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background: white;
-                border-top: 1px solid var(--border);
-                display: flex;
-                justify-content: space-around;
-                padding: 10px 0;
-                z-index: 200;
-            }
-            .b-nav-item {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                font-size: 0.7rem;
-                color: #888;
-                border: none;
-                background: none;
-                gap: 4px;
-            }
-            .b-nav-item.active { color: var(--primary); }
-            .b-nav-item i { font-size: 1.2rem; }
-            
-            main { padding-bottom: 70px; } /* 하단 바 공간 확보 */
+            .bottom-nav { display: flex; }
+            .nav-tabs { display: none; }
+            .app-content { padding-bottom: 80px; }
         }
-        
-        @media (min-width: 601px) {
-            .bottom-nav { display: none; }
-        }
+
+        /* 복습 카드 */
+        .flashcard { background: white; padding: 20px; border-radius: 10px; border-left: 5px solid var(--accent); margin-bottom: 10px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .answer { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd; color: var(--accent); }
+        .flashcard.flipped .answer { display: block; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">
-            <i class="fa-solid fa-graduation-cap"></i>
-            <span>Major-AI Grammar</span>
+    <section id="section-home" class="page-section active">
+        <div class="hero-container">
+            <div class="project-badge">2025 KSNU AIX-Boost Program</div>
+            <h1 class="hero-title">전공 연계 AI<br>문법 학습 시스템</h1>
+            <p class="hero-subtitle">
+                생성형 AI를 활용하여 전공 맥락 속에서 영문법을 학습하고,<br>
+                나만의 교재를 만드는 자기주도 학습 플랫폼
+            </p>
+
+            <div class="info-cards">
+                <div class="card">
+                    <h3><i class="fa-solid fa-graduation-cap"></i> 교육과정 개선</h3>
+                    <p>기존의 주입식 문법 교육에서 벗어나, 학습자가 직접 AI 도구를 활용해 전공 지식과 영어를 동시에 습득하는 융합형 커리큘럼입니다.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-robot"></i> AI 실전 문제해결</h3>
+                    <p>건축, 간호, 컴공 등 내 전공 원서에 나오는 표현을 바탕으로 예문을 생성하고, 데이터를 축적하여 맞춤형 학습을 지원합니다.</p>
+                </div>
+            </div>
+
+            <button class="start-btn" onclick="enterApp()">프로젝트 시작하기 <i class="fa-solid fa-arrow-right"></i></button>
         </div>
-        <nav class="nav-tabs">
-            <button class="nav-btn active" onclick="switchTab('generator')">생성하기</button>
-            <button class="nav-btn" onclick="switchTab('submission')">제출/피드백</button>
-            <button class="nav-btn" onclick="switchTab('review')">복습 앱</button>
+    </section>
+
+    <section id="section-app" class="page-section">
+        <div class="app-header">
+            <button class="home-btn" onclick="goHome()"><i class="fa-solid fa-house"></i></button>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTool('generator')">생성기</button>
+                <button class="nav-tab" onclick="switchTool('submission')">과제제출</button>
+                <button class="nav-tab" onclick="switchTool('review')">복습앱</button>
+            </div>
+            <div style="width: 24px;"></div> </div>
+
+        <div class="app-content">
+            <div id="tool-generator" class="tool-screen active">
+                <div class="panel">
+                    <h3><i class="fa-solid fa-sliders"></i> 학습 조건 설정</h3>
+                    <label>전공 분야</label>
+                    <select id="majorSelect" onchange="generatePrompt()">
+                        <option value="architect">건축공학 (Architecture)</option>
+                        <option value="nursing">간호학 (Nursing)</option>
+                        <option value="cs">컴퓨터공학 (Computer Sci)</option>
+                        <option value="biz">경영학 (Business)</option>
+                    </select>
+                    
+                    <label>문법 주제</label>
+                    <select id="grammarSelect" onchange="generatePrompt()">
+                        <option value="passive">수동태 (Passive Voice)</option>
+                        <option value="relative">관계대명사 (Relative Clauses)</option>
+                        <option value="to_inf">To 부정사 (To-Infinitive)</option>
+                    </select>
+
+                    <label>전공 키워드 (옵션)</label>
+                    <input type="text" id="keyword" placeholder="예: structure, patient, data..." oninput="generatePrompt()">
+                </div>
+
+                <div class="panel" style="background: #2c3e50; color: white;">
+                    <h3><i class="fa-solid fa-terminal"></i> AI 프롬프트</h3>
+                    <div id="promptDisplay" class="prompt-box"></div>
+                    <button class="copy-btn" onclick="copyPrompt()">복사해서 AI에게 질문하기</button>
+                </div>
+            </div>
+
+            <div id="tool-submission" class="tool-screen">
+                <div class="panel">
+                    <h3><i class="fa-solid fa-file-arrow-up"></i> 과제 제출 및 피드백</h3>
+                    <p style="font-size:0.9rem; color:#666;">
+                        AI가 생성한 예문과 본인의 작문을 아래 댓글로 제출하세요.<br>
+                        교수자 및 동료 학습자의 피드백이 누적됩니다.
+                    </p>
+                    <div class="giscus"></div>
+                </div>
+            </div>
+
+            <div id="tool-review" class="tool-screen">
+                <h3><i class="fa-solid fa-layer-group"></i> 오늘의 전공 단어장</h3>
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <strong>[건축] The structure is supported by...</strong>
+                    <div class="answer">정답: 수동태 (The structure receives the action)</div>
+                </div>
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <strong>[간호] Patients showing symptoms...</strong>
+                    <div class="answer">정답: 현재분사 (Active meaning)</div>
+                </div>
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <strong>[컴공] The algorithm used to sort...</strong>
+                    <div class="answer">정답: 과거분사 (Passive meaning)</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <button class="b-item active" onclick="switchTool('generator')" id="m-gen"><i class="fa-solid fa-wand-magic-sparkles"></i> 생성</button>
+            <button class="b-item" onclick="switchTool('submission')" id="m-sub"><i class="fa-solid fa-file-pen"></i> 제출</button>
+            <button class="b-item" onclick="switchTool('review')" id="m-rev"><i class="fa-solid fa-repeat"></i> 복습</button>
         </nav>
-    </header>
-
-    <main>
-        <div id="view-generator" class="screen active">
-            <div class="control-panel">
-                <div class="section-title"><i class="fa-solid fa-sliders"></i> 학습 설정</div>
-                
-                <div class="select-group">
-                    <div>
-                        <label style="font-size:0.8rem; font-weight:bold;">전공 분야</label>
-                        <select id="majorSelect" onchange="generatePrompt()">
-                            <option value="architect">건축학 (Architecture)</option>
-                            <option value="nursing">간호학 (Nursing)</option>
-                            <option value="cs">컴퓨터공학 (CS)</option>
-                            <option value="biz">경영학 (Business)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-size:0.8rem; font-weight:bold;">문법 항목</label>
-                        <select id="grammarSelect" onchange="generatePrompt()">
-                            <option value="passive">수동태 (Passive Voice)</option>
-                            <option value="relative">관계대명사 (Relative Clauses)</option>
-                            <option value="to_inf">To 부정사 (To-Infinitive)</option>
-                            <option value="participle">분사구문 (Participle)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <label style="font-size:0.8rem; font-weight:bold;">전공 핵심 키워드 (선택)</label>
-                <input type="text" id="keywordInput" placeholder="예: structure, load, concrete" oninput="generatePrompt()">
-            </div>
-
-            <div class="control-panel" style="background: #fdfdfd;">
-                <div class="section-title"><i class="fa-solid fa-robot"></i> 프롬프트 템플릿</div>
-                <div class="prompt-box" id="promptDisplay">
-                    </div>
-                
-                <button class="action-btn" onclick="copyPrompt()">
-                    <i class="fa-regular fa-copy"></i> 프롬프트 복사 & AI(ChatGPT)로 이동
-                </button>
-            </div>
-        </div>
-
-        <div id="view-submission" class="screen">
-            <div class="section-title"><i class="fa-solid fa-file-pen"></i> 학습 결과 제출</div>
-            <div class="guide-text">
-                <strong><i class="fa-solid fa-circle-info"></i> 제출 방법</strong><br>
-                1. AI가 생성한 예문과 문항을 복사하세요.<br>
-                2. 아래 댓글창에 <strong>[전공/문법]</strong> 말머리와 함께 붙여넣으세요.<br>
-                3. 본인이 해석한 내용이나 궁금한 점을 덧붙이세요.
-            </div>
-            
-            <div class="submission-area">
-                <div class="giscus"></div>
-            </div>
-        </div>
-
-        <div id="view-review" class="screen">
-            <div class="section-title">
-                <span><i class="fa-solid fa-mobile-screen"></i> 오늘의 전공 표현 (5)</span>
-                <span style="font-size:0.8rem; color:#888;">터치하여 정답 확인</span>
-            </div>
-
-            <div class="flashcard-container" id="cardContainer">
-                <div class="flashcard" onclick="this.classList.toggle('flipped')">
-                    <div class="card-tag">
-                        <span>건축학 (Architecture)</span>
-                        <i class="fa-regular fa-star"></i>
-                    </div>
-                    <div class="card-content">The load ________ by the column. (support)</div>
-                    <div class="card-answer">정답: is supported<br>해설: 주어(load)가 지지받는 대상이므로 수동태 사용</div>
-                </div>
-
-                <div class="flashcard" onclick="this.classList.toggle('flipped')">
-                    <div class="card-tag">
-                        <span>간호학 (Nursing)</span>
-                        <i class="fa-regular fa-star"></i>
-                    </div>
-                    <div class="card-content">Patients ________ symptoms should report immediately. (show)</div>
-                    <div class="card-answer">정답: showing<br>해설: 환자가 증상을 능동적으로 보이므로 현재분사(ing) 수식</div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <nav class="bottom-nav">
-        <button class="b-nav-item active" onclick="switchTab('generator')" id="m-nav-generator">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            <span>생성</span>
-        </button>
-        <button class="b-nav-item" onclick="switchTab('submission')" id="m-nav-submission">
-            <i class="fa-solid fa-pen-to-square"></i>
-            <span>제출</span>
-        </button>
-        <button class="b-nav-item" onclick="switchTab('review')" id="m-nav-review">
-            <i class="fa-solid fa-layer-group"></i>
-            <span>복습</span>
-        </button>
-    </nav>
+    </section>
 
     <script>
-        // --- 1. 탭 전환 로직 ---
-        function switchTab(tabId) {
-            // 화면 전환
-            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-' + tabId).classList.add('active');
-
-            // PC 상단 버튼 활성화
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            // (간단 구현을 위해 인덱스로 매칭하거나, 요소를 직접 찾음)
-            if(tabId === 'generator') document.querySelectorAll('.nav-btn')[0].classList.add('active');
-            if(tabId === 'submission') document.querySelectorAll('.nav-btn')[1].classList.add('active');
-            if(tabId === 'review') document.querySelectorAll('.nav-btn')[2].classList.add('active');
-
-            // 모바일 하단 버튼 활성화
-            document.querySelectorAll('.b-nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('m-nav-' + tabId).classList.add('active');
+        // 1. 화면 전환 (메인 <-> 앱)
+        function enterApp() {
+            document.getElementById('section-home').classList.remove('active');
+            document.getElementById('section-app').classList.add('active');
+        }
+        function goHome() {
+            document.getElementById('section-app').classList.remove('active');
+            document.getElementById('section-home').classList.add('active');
         }
 
-        // --- 2. 프롬프트 생성 로직 (기획서 반영) ---
-        function generatePrompt() {
-            const majorMap = {
-                'architect': 'Architecture (건축학개론)',
-                'nursing': 'Nursing (성인간호학)',
-                'cs': 'Computer Science (운영체제)',
-                'biz': 'Business (경영학원론)'
-            };
-            const grammarMap = {
-                'passive': 'Passive Voice (수동태)',
-                'relative': 'Relative Clauses (관계대명사)',
-                'to_inf': 'To-Infinitive (To 부정사)',
-                'participle': 'Participle Phrases (분사구문)'
-            };
+        // 2. 도구 탭 전환 (생성기/제출/복습)
+        function switchTool(toolId) {
+            // PC/모바일 탭 스타일 초기화
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.b-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tool-screen').forEach(el => el.classList.remove('active'));
 
+            // 선택된 탭 활성화
+            document.getElementById('tool-' + toolId).classList.add('active');
+            
+            // 버튼 활성화 (인덱스 매핑 대신 단순화)
+            if(toolId === 'generator') { 
+                document.querySelectorAll('.nav-tab')[0].classList.add('active');
+                document.getElementById('m-gen').classList.add('active');
+            }
+            if(toolId === 'submission') {
+                document.querySelectorAll('.nav-tab')[1].classList.add('active');
+                document.getElementById('m-sub').classList.add('active');
+            }
+            if(toolId === 'review') {
+                document.querySelectorAll('.nav-tab')[2].classList.add('active');
+                document.getElementById('m-rev').classList.add('active');
+            }
+        }
+
+        // 3. 프롬프트 생성 로직
+        function generatePrompt() {
             const major = document.getElementById('majorSelect').value;
             const grammar = document.getElementById('grammarSelect').value;
-            const keyword = document.getElementById('keywordInput').value || '[관련 키워드 없음]';
-
-            const template = `Act as an English Professor in ${majorMap[major]}.
-I want to practice English grammar, specifically "${grammarMap[major]}".
-
-Please generate a learning material following these steps:
-
-1. **Vocabulary:** List 5 key terms related to ${majorMap[major]} (e.g., related to "${keyword}").
-2. **Examples:** Create 5 sentences using these terms that demonstrate "${grammarMap[major]}".
-3. **Quiz:** Create 3 fill-in-the-blank questions based on the examples.
-4. **Writing Task:** Ask me to write a short paragraph (3 sentences) summarizing a concept in my major using this grammar point.
-
-Make the difficulty suitable for a college freshman (A2-B1 level).`;
-
-            document.getElementById('promptDisplay').innerText = template;
+            const keyword = document.getElementById('keyword').value || '(Topic Keyword)';
+            
+            const txt = `Act as a professor in ${major}.
+Create 3 sentences using "${grammar}" related to "${keyword}".
+Also, provide a fill-in-the-blank quiz for each sentence.`;
+            
+            document.getElementById('promptDisplay').innerText = txt;
         }
 
         function copyPrompt() {
             const text = document.getElementById('promptDisplay').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("프롬프트가 복사되었습니다! AI(ChatGPT/Gemini)에 붙여넣으세요.");
-            });
+            navigator.clipboard.writeText(text).then(() => alert('복사되었습니다! AI에게 붙여넣으세요.'));
         }
 
-        // --- 3. Giscus 로드 (본인 정보 수정 필수) ---
-        // 페이지 로드 시 바로 실행됨
-        (function loadGiscus() {
+        // ★★★ 4. Giscus 설정 (오류 수정 핵심) ★★★
+        // 아래 data-repo, data-repo-id, data-category-id를 본인 것으로 꼭 바꿔주세요!
+        (function() {
             const script = document.createElement('script');
             script.src = "https://giscus.app/client.js";
             
-            // ★★★ 아래 정보를 본인 Giscus 설정값으로 교체하세요 ★★★
-            script.setAttribute("data-repo", "본인아이디/저장소명");
-            script.setAttribute("data-repo-id", "R_kgDOL..."); 
+            // ▼▼▼ 여기를 수정해야 오류가 사라집니다 ▼▼▼
+            script.setAttribute("data-repo", "rlaclajrdj25/My-grammar-map-"); // 선생님 저장소 주소
+            script.setAttribute("data-repo-id", "R_kgDOL..."); // 1단계에서 받은 ID값 붙여넣기
             script.setAttribute("data-category", "General");
-            script.setAttribute("data-category-id", "DIC_kwDOL...");
-            // ----------------------------------------------------
-
+            script.setAttribute("data-category-id", "DIC_kwDOL..."); // 1단계에서 받은 Category ID값 붙여넣기
+            // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+            
             script.setAttribute("data-mapping", "pathname");
             script.setAttribute("data-strict", "0");
             script.setAttribute("data-reactions-enabled", "1");
             script.setAttribute("data-emit-metadata", "0");
-            script.setAttribute("data-input-position", "top");
+            script.setAttribute("data-input-position", "bottom");
             script.setAttribute("data-theme", "light");
             script.setAttribute("data-lang", "ko");
             script.crossOrigin = "anonymous";
             script.async = true;
-
-            const giscusArea = document.querySelector('.giscus');
-            if(giscusArea) giscusArea.appendChild(script);
+            
+            document.querySelector('.giscus').appendChild(script);
         })();
 
         // 초기 실행
         generatePrompt();
-
     </script>
 </body>
 </html>

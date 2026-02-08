@@ -42,6 +42,24 @@
         </div>
     </div>
 
+    <div class="panel" style="background:#2c3e50; color:white;">
+            <h3><i class="fa-solid fa-terminal"></i> AI 프롬프트</h3>
+            <div id="promptDisplay" class="prompt-box">조건을 선택하세요...</div>
+            <button class="copy-btn" onclick="copyPrompt()">복사하기</button>
+            
+            <button id="generateBtn" onclick="askGemini()" style="margin-top: 10px; background: #3498db; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%;">
+                <i class="fa-solid fa-paper-plane"></i> AI에게 생성 요청하기
+            </button>
+        </div>
+
+        <div class="panel" id="resultPanel" style="display:none; margin-top: 20px;">
+            <h3><i class="fa-solid fa-square-poll-vertical"></i> 생성된 학습 자료</h3>
+            <div id="apiResponse" style="white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 8px; color: #333; min-height: 100px;">
+                결과를 기다리는 중...
+            </div>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
         <a href="generator.html" class="b-item active"><i class="fa-solid fa-wand-magic-sparkles"></i> 생성</a>
         <a href="submission.html" class="b-item"><i class="fa-solid fa-file-pen"></i> 제출</a>

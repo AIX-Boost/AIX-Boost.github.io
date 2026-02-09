@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* 결과창을 위한 추가 스타일 */
         .prompt-box { background: #1a252f; padding: 15px; border-radius: 8px; margin-bottom: 10px; min-height: 60px; word-break: break-all; }
         #apiResponse { 
             white-space: pre-wrap; 
@@ -20,23 +19,11 @@
             border: 1px solid #ddd;
         }
         .generate-btn {
-            margin-top: 10px; 
-            background: #3498db; 
-            color: white; 
-            border: none; 
-            padding: 12px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            width: 100%;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            margin-top: 10px; background: #3498db; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .generate-btn:disabled { background: #95a5a6; }
 
-        /* 결과 복사 버튼 전용 스타일 */
+        /* 결과 복사 버튼 스타일 */
         .result-header {
             display: flex;
             justify-content: space-between;
@@ -44,7 +31,7 @@
             margin-bottom: 10px;
         }
         .copy-result-btn {
-            background: #2ecc71;
+            background: #2ecc71; /* 초록색 버튼 */
             color: white;
             border: none;
             padding: 8px 15px;
@@ -87,8 +74,7 @@
         <div class="panel" style="background:#2c3e50; color:white;">
             <h3><i class="fa-solid fa-terminal"></i> AI 프롬프트</h3>
             <div id="promptDisplay" class="prompt-box">조건을 선택하세요...</div>
-            <button class="copy-btn" onclick="copyPrompt()">복사하기</button>
-            
+            <button class="copy-btn" onclick="copyPrompt()">프롬프트 복사</button>
             <button id="generateBtn" class="generate-btn" onclick="askGemini()">
                 <i class="fa-solid fa-paper-plane"></i> AI에게 생성 요청하기
             </button>
@@ -113,9 +99,12 @@
     </nav>
 
     <script src="script.js"></script>
+
     <script>
+        // API 설정
         const GEMINI_API_KEY = "AIzaSyBxnj8lNrrQSc_tXYWYwEF1NkWgfnZwRlc"; 
 
+        // [핵심 기능 1] AI에게 요청하기
         async function askGemini() {
             const promptText = document.getElementById('promptDisplay').innerText;
             const responseDisplay = document.getElementById('apiResponse');
@@ -141,11 +130,10 @@
                 });
 
                 const data = await response.json();
-                
                 if (data.candidates && data.candidates[0].content.parts[0].text) {
                     responseDisplay.innerText = data.candidates[0].content.parts[0].text;
                 } else {
-                    responseDisplay.innerText = "❌ 답변 생성에 실패했습니다. API 키나 할당량을 확인해주세요.";
+                    responseDisplay.innerText = "❌ 답변 생성 실패.";
                 }
             } catch (error) {
                 responseDisplay.innerText = "⚠️ 오류 발생: " + error.message;
@@ -155,15 +143,15 @@
             }
         }
 
-        // 결과 복사 기능을 위한 새로운 함수 추가
+        // [핵심 기능 2] 생성된 결과물만 복사하기
         function copyResult() {
             const resultText = document.getElementById('apiResponse').innerText;
             if (resultText === "결과를 기다리는 중..." || resultText.includes("⏳")) {
-                alert("아직 생성된 결과가 없습니다.");
+                alert("복사할 결과가 아직 없습니다.");
                 return;
             }
             navigator.clipboard.writeText(resultText).then(() => {
-                alert('학습 자료가 복사되었습니다!');
+                alert('생성된 학습 자료가 복사되었습니다!');
             });
         }
     </script>

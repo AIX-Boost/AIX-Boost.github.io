@@ -161,7 +161,7 @@ function loadGiscus(term) {
 }
 
 // 본인의 API 키를 여기에 입력하세요
-const GEMINI_API_KEY = "AIzaSyBxnj8lNrrQSc_tXYWYwEF1NkWgfnZwRlc"; 
+const GEMINI_API_KEY = "AIzaSyCNUybM0aEsvgMcWCpCCTWdFe1gR2euqFs"; 
 
 async function askGemini() {
     const promptText = document.getElementById('promptDisplay').innerText;

@@ -35,6 +35,25 @@
             gap: 10px;
         }
         .generate-btn:disabled { background: #95a5a6; }
+
+        /* 결과 복사 버튼 전용 스타일 */
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .copy-result-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .copy-result-btn:hover { background: #27ae60; }
     </style>
 </head>
 <body>
@@ -76,7 +95,12 @@
         </div>
 
         <div class="panel" id="resultPanel" style="display:none; margin-top: 20px;">
-            <h3><i class="fa-solid fa-square-poll-vertical"></i> 생성된 학습 자료</h3>
+            <div class="result-header">
+                <h3 style="margin: 0;"><i class="fa-solid fa-square-poll-vertical"></i> 생성된 학습 자료</h3>
+                <button class="copy-result-btn" onclick="copyResult()">
+                    <i class="fa-solid fa-copy"></i> 결과 복사하기
+                </button>
+            </div>
             <div id="apiResponse">결과를 기다리는 중...</div>
         </div>
     </div>
@@ -90,7 +114,6 @@
 
     <script src="script.js"></script>
     <script>
-        // API 키를 여기에 입력하세요 (보안 주의!)
         const GEMINI_API_KEY = "AIzaSyBxnj8lNrrQSc_tXYWYwEF1NkWgfnZwRlc"; 
 
         async function askGemini() {
@@ -130,6 +153,18 @@
                 btn.disabled = false;
                 resultPanel.scrollIntoView({ behavior: 'smooth' });
             }
+        }
+
+        // 결과 복사 기능을 위한 새로운 함수 추가
+        function copyResult() {
+            const resultText = document.getElementById('apiResponse').innerText;
+            if (resultText === "결과를 기다리는 중..." || resultText.includes("⏳")) {
+                alert("아직 생성된 결과가 없습니다.");
+                return;
+            }
+            navigator.clipboard.writeText(resultText).then(() => {
+                alert('학습 자료가 복사되었습니다!');
+            });
         }
     </script>
 </body>

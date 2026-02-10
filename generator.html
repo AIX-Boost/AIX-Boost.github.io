@@ -65,22 +65,31 @@
         </nav>
     </header>
 
-    <div class="container">
-        <div class="panel">
-            <h3><i class="fa-solid fa-sliders"></i> 학습 조건 설정</h3>
-            <label>단과대학</label>
-            <select id="collegeSelect"><option value="">선택하세요</option></select>
-            <label>학과</label>
-            <select id="majorSelect"><option value="">선택하세요</option></select>
-            <label>문법 주제</label>
-            <select id="grammarSelect">
-                <option value="Passive Voice">수동태 (Passive Voice)</option>
-                <option value="Relative Clauses">관계대명사</option>
-                <option value="To-Infinitive">To 부정사</option>
-            </select>
-            <label>키워드</label>
-            <input type="text" id="keyword" placeholder="예: 데이터, 세포...">
-        </div>
+   <div class="container">
+    <div class="panel">
+        <h3><i class="fa-solid fa-sliders"></i> 학습 조건 설정</h3>
+        
+        <label>단과대학</label>
+        <select id="collegeSelect" onchange="updateMajors()">
+            <option value="">선택하세요</option>
+        </select>
+        
+        <label>학과</label>
+        <select id="majorSelect" onchange="generatePrompt()">
+            <option value="">선택하세요</option>
+        </select>
+        
+        <label>문법 주제</label>
+        <select id="grammarSelect" onchange="generatePrompt()">
+            <option value="Passive Voice">수동태 (Passive Voice)</option>
+            <option value="Relative Clauses">관계대명사</option>
+            <option value="To-Infinitive">To 부정사</option>
+        </select>
+        
+        <label>키워드</label>
+        <input type="text" id="keyword" placeholder="예: 데이터, 세포..." oninput="generatePrompt()">
+    </div>
+</div>
 
         <div class="panel" style="background:#2c3e50; color:white;">
             <h3><i class="fa-solid fa-terminal"></i> AI 프롬프트</h3>

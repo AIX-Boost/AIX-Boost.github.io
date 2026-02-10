@@ -123,7 +123,7 @@ async function askGemini() {
 
   try {
     const response = await fetch(
-      "https://YOUR_PROJECT.vercel.app/api/gemini",
+      "https://aix-boost-api.vercel.app/api/gemini",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -3,153 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Boost 교수자 관리 시스템 (Special Edition)</title>
+    <title>AI-Boost 교수자 관리 시스템 (v2.5)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .admin-body { background-color: #f0f4f8; color: #333; font-family: 'Pretendard', sans-serif; }
-        .admin-container { padding: 30px; max-width: 1300px; margin: 0 auto; }
+        .admin-container { padding: 30px; max-width: 1400px; margin: 0 auto; }
         
-        /* 대시보드 상단 요약 */
+        /* 상단 요약 */
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 30px; }
         .stat-card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); text-align: center; border-bottom: 5px solid #3498db; }
-        .stat-card i { font-size: 1.8rem; color: #3498db; margin-bottom: 15px; }
         .stat-card .num { font-size: 2.2rem; font-weight: 800; display: block; color: #2c3e50; }
         
-        /* 레이아웃 */
-        .dashboard-row { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 30px; margin-bottom: 30px; }
-        .content-box { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); height: fit-content; }
+        /* 메인 레이아웃 (좌우 동일 크기 배치) */
+        .dashboard-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
+        .content-box { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); min-height: 480px; display: flex; flex-direction: column; }
         
-        /* [추가] 주차별 분석 그리드 */
-        .week-analysis-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
-        .week-stat-item { background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.3s; }
-        .week-stat-item:hover { background: #3498db; color: white; border-color: #3498db; }
-        .week-label { font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; display: block; }
-        .week-topic { font-size: 0.9rem; margin-bottom: 8px; font-weight: 600; }
-        .progress-bar { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
-        .progress-inner { height: 100%; background: #3498db; }
-        .week-stat-item:hover .progress-inner { background: white; }
-
-        .ai-insight { background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 20px; border-radius: 12px; margin-top: 20px; }
+        /* 주차별 분석 그리드 (15주차 확장) */
+        .week-analysis-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 15px; margin-top: 20px; }
+        .week-stat-item { background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .week-active { border: 2px solid #3498db !important; background: #fff !important; }
+        .week-future { opacity: 0.6; background: #f1f5f9; }
+        .week-topic { font-size: 0.9rem; margin-bottom: 8px; font-weight: 600; color: #2d3748; }
+        
+        /* 리스트 및 배지 */
         .data-item { padding: 15px 0; border-bottom: 1px solid #edf2f7; display: flex; justify-content: space-between; align-items: center; }
         .status-badge { background: #ebf8ff; color: #3182ce; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+        .ai-insight { background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 20px; border-radius: 12px; margin-top: auto; }
     </style>
 </head>
 <body class="admin-body">
     <script>
         (function() {
-            const isAuth = sessionStorage.getItem("admin_auth");
-            if (isAuth !== "true") {
-                alert("교수자 인증이 필요합니다.");
-                location.href = "index.html";
-            }
+            if (sessionStorage.getItem("admin_auth") !== "true") { location.href = "index.html"; }
         })();
     </script>
 
     <header class="app-header">
         <div style="display:flex; align-items:center; gap:15px;">
             <a href="index.html" class="home-btn"><i class="fa-solid fa-house"></i></a>
-            <h2 style="color: white; margin: 0; font-weight: 800;">Management Console <small style="font-size:0.5em; font-weight:400; opacity:0.7;">v2.0</small></h2>
+            <h2 style="color: white; margin: 0; font-weight: 800;">Management Console <small style="opacity:0.7;">v2.5</small></h2>
         </div>
-        <button onclick="logout()" style="background:rgba(255,255,255,0.2); border:1px solid white; color:white; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">안전 로그아웃</button>
+        <button onclick="logout()" style="background:rgba(255,255,255,0.2); border:1px solid white; color:white; padding:8px 15px; border-radius:8px; cursor:pointer;">안전 로그아웃</button>
     </header>
 
     <div class="admin-container">
         <div class="stat-grid">
-            <div class="stat-card"><i class="fa-solid fa-users-viewfinder"></i><span class="label">수강 인원</span><span class="num">40명</span></div>
-            <div class="stat-card"><i class="fa-solid fa-clipboard-check"></i><span class="label">과제 이행률</span><span class="num">98%</span></div>
-            <div class="stat-card"><i class="fa-solid fa-bolt"></i><span class="label">AI 피드백 속도</span><span class="num">1.2s</span></div>
-            <div class="stat-card"><i class="fa-solid fa-graduation-cap"></i><span class="label">평균 성취도</span><span class="num">92.4점</span></div>
+            <div class="stat-card"><i class="fa-solid fa-users"></i><span class="label">수강생</span><span class="num">40명</span></div>
+            <div class="stat-card"><i class="fa-solid fa-check-double"></i><span class="label">평균 이행률</span><span class="num">96%</span></div>
+            <div class="stat-card"><i class="fa-solid fa-fire"></i><span class="label">학습 몰입도</span><span class="num">High</span></div>
+            <div class="stat-card"><i class="fa-solid fa-award"></i><span class="label">평균 점수</span><span class="num">91.8</span></div>
         </div>
 
         <div class="dashboard-row">
             <div class="content-box">
-                <h3 style="margin-bottom:25px;"><i class="fa-solid fa-chart-area" style="color:#3498db; margin-right:10px;"></i>전체 학습 성취도 트렌드</h3>
-                <canvas id="learningChart"></canvas>
-                
+                <h3 style="margin-bottom:20px;"><i class="fa-solid fa-chart-line" style="color:#3498db;"></i> 전체 학습 성취도 트렌드 (1~5주)</h3>
+                <canvas id="learningChart" style="max-height: 250px;"></canvas>
                 <div class="ai-insight">
                     <h4><i class="fa-solid fa-robot"></i> AI 교수지원 제언</h4>
-                    <p>현재 4주차 '수동태' 학습 데이터 분석 결과, 수강생의 85%가 전공 어휘와의 결합에 높은 이해도를 보이고 있습니다. 다음 수업 시 '관계대명사'의 심화 예문을 제공하는 것을 추천합니다.</p>
+                    <p>5주차 'To 부정사' 진입 전, 4주차 '수동태' 오답률이 높은 학생 5명에게 보충 자료 전송을 추천합니다.</p>
                 </div>
             </div>
 
             <div class="content-box">
-                <h3 style="margin-bottom:25px;"><i class="fa-solid fa-user-graduate" style="color:#3498db; margin-right:10px;"></i>최근 제출 현황</h3>
+                <h3 style="margin-bottom:20px;"><i class="fa-solid fa-user-graduate" style="color:#3498db;"></i> 실시간 학습 활동 (최근 5건)</h3>
                 <div class="data-list">
                     <div class="data-item">
-                        <div><span class="student-name">이재성</span><span class="student-id">(2100036)</span><div style="font-size:0.8rem; color:#718096;">영어영문학과 | 4주차 과제 완료</div></div>
-                        <span class="status-badge">Best Match</span>
+                        <div><strong>이재성 (2100036)</strong><div style="font-size:0.8rem; color:#718096;">영어영문학과 | 5주차 명사적 용법 퀴즈 완료</div></div>
+                        <span class="status-badge">Excellent</span>
                     </div>
                     <div class="data-item">
-                        <div><span class="student-name">정서윤</span><span class="student-id">(2403004)</span><div style="font-size:0.8rem; color:#718096;">영어영문학과 | 퀴즈 챌린지 달성</div></div>
+                        <div><strong>정서윤 (2403004)</strong><div style="font-size:0.8rem; color:#718096;">영어영문학과 | 5주차 예문 생성 및 PDF 저장</div></div>
                         <span class="status-badge">Perfect</span>
+                    </div>
+                    <div class="data-item">
+                        <div><strong>김하늘 (2201045)</strong><div style="font-size:0.8rem; color:#718096;">컴퓨터정보공학과 | 4주차 수동태 복습 완료</div></div>
+                        <span class="status-badge">Completed</span>
+                    </div>
+                    <div class="data-item">
+                        <div><strong>최준호 (2304012)</strong><div style="font-size:0.8rem; color:#718096;">인공지능융합학과 | 5주차 어휘 학습 중</div></div>
+                        <span class="status-badge">Active</span>
+                    </div>
+                    <div class="data-item" style="border:none;">
+                        <div><strong>박지민 (2100055)</strong><div style="font-size:0.8rem; color:#718096;">영어영문학과 | 퀴즈 오답 피드백 확인</div></div>
+                        <span class="status-badge">Reviewing</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="content-box" style="margin-top: 0;">
-            <h3><i class="fa-solid fa-layer-group" style="color:#3498db; margin-right:10px;"></i>주차별 영문법 이해도 지표 (Topic Insight)</h3>
-            <p style="font-size: 0.85rem; color: #718096; margin-bottom: 20px;">각 주차별 핵심 문법에 대한 40명 수강생의 퀴즈 정답률 및 생성 예문 정확도 평균입니다.</p>
-            
-            <div class="week-analysis-grid">
-                <div class="week-stat-item">
-                    <span class="week-label">1주차</span>
-                    <div class="week-topic">문장 구조</div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:5px;"><span>이해도</span><span>95%</span></div>
-                    <div class="progress-bar"><div class="progress-inner" style="width: 95%;"></div></div>
+        <div class="content-box">
+            <h3><i class="fa-solid fa-calendar-days" style="color:#3498db;"></i> 15주차 전체 커리큘럼 이해도 분석 (현재 5주차 진행 중)</h3>
+            <div class="week-analysis-grid" id="weekContainer">
                 </div>
-                <div class="week-stat-item">
-                    <span class="week-label">2주차</span>
-                    <div class="week-topic">명사와 관사</div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:5px;"><span>이해도</span><span>88%</span></div>
-                    <div class="progress-bar"><div class="progress-inner" style="width: 88%;"></div></div>
-                </div>
-                <div class="week-stat-item">
-                    <span class="week-label">3주차</span>
-                    <div class="week-topic">시제</div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:5px;"><span>이해도</span><span>92%</span></div>
-                    <div class="progress-bar"><div class="progress-inner" style="width: 92%;"></div></div>
-                </div>
-                <div class="week-stat-item" style="border: 2px solid #3498db;">
-                    <span class="week-label" style="color:#3498db;">4주차 (Current)</span>
-                    <div class="week-topic">수동태</div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:5px;"><span>이해도</span><span>82%</span></div>
-                    <div class="progress-bar"><div class="progress-inner" style="width: 82%;"></div></div>
-                </div>
-                <div class="week-stat-item">
-                    <span class="week-label">5주차</span>
-                    <div class="week-topic">To 부정사</div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:5px;"><span>이해도</span><span>-</span></div>
-                    <div class="progress-bar"><div class="progress-inner" style="width: 0%;"></div></div>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
         function logout() { sessionStorage.removeItem("admin_auth"); location.href = "index.html"; }
+
+        // 15주차 데이터 정의
+        const weekData = [
+            { t: "문장 구조", p: 95 }, { t: "명사와 관사", p: 88 }, { t: "시제", p: 92 }, 
+            { t: "수동태", p: 82 }, { t: "To 부정사", p: 75 }, { t: "동명사", p: 0 },
+            { t: "분사구문", p: 0 }, { t: "중간고사", p: 0 }, { t: "관계대명사", p: 0 },
+            { t: "관계부사", p: 0 }, { t: "가정법", p: 0 }, { t: "접속사/전치사", p: 0 },
+            { t: "비교구문", p: 0 }, { t: "특수구문", p: 0 }, { t: "기말 프로젝트", p: 0 }
+        ];
+
+        const container = document.getElementById('weekContainer');
+        weekData.forEach((w, i) => {
+            const currentWeek = i + 1;
+            const isFuture = currentWeek > 5;
+            const isActive = currentWeek === 5;
+            
+            container.innerHTML += `
+                <div class="week-stat-item ${isActive ? 'week-active' : ''} ${isFuture ? 'week-future' : ''}">
+                    <span style="font-size:0.75rem; font-weight:bold; color:${isActive ? '#3498db':'#718096'}">${currentWeek}주차 ${isActive ? '(진행중)':''}</span>
+                    <div class="week-topic">${w.t}</div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.7rem; margin-bottom:5px;">
+                        <span>이해도</span><span>${isFuture ? '-' : w.p + '%'}</span>
+                    </div>
+                    <div style="height:4px; background:#e2e8f0; border-radius:2px;">
+                        <div style="width:${w.p}%; height:100%; background:#3498db; border-radius:2px;"></div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // 그래프 (1~5주차)
         const ctx = document.getElementById('learningChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['1주', '2주', '3주', '4주', '5주', '6주'],
+                labels: ['1주', '2주', '3주', '4주', '5주'],
                 datasets: [{
-                    label: '학습 몰입도 평균',
-                    data: [72, 85, 82, 98, 91, 95],
+                    label: '학습 성취도',
+                    data: [72, 85, 82, 98, 91],
                     borderColor: '#3498db',
                     backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 4,
-                    pointRadius: 6,
-                    pointBackgroundColor: '#fff'
+                    fill: true, tension: 0.4, borderWidth: 4
                 }]
             },
-            options: { responsive: true, plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, max: 100, grid: { color: '#edf2f7' } }, x: { grid: { display: false } } }
-            }
+            options: { responsive: true, plugins: { legend: { display: false } } }
         });
     </script>
 </body>

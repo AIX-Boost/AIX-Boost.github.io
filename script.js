@@ -36,11 +36,24 @@ const weeks = [
   { id: 15, title: "기말 프로젝트 제출", topic: "기말 과제(Final Project)" }
 ];
 
-
 /* ===============================
-   페이지 로드
+   DOM 로드
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
+
+  /* 생성기 페이지 */
+  const collegeSelect = document.getElementById("collegeSelect");
+  if (collegeSelect) {
+    for (let college in collegeData) {
+      const option = document.createElement("option");
+      option.value = college;
+      option.innerText = college;
+      collegeSelect.appendChild(option);
+    }
+    generatePrompt();
+  }
+
+  /* 과제제출 페이지 */
   const weekGrid = document.getElementById("weekGrid");
   if (weekGrid) {
     weeks.forEach(week => {
@@ -60,36 +73,62 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ===============================
-   주차 클릭 → 과제 제출 화면
+   생성기 관련
+================================ */
+function updateMajors() {
+  const college = document.getElementById("collegeSelect")?.value;
+  const majorSelect = document.getElementById("majorSelect");
+  if (!college || !majorSelect) return;
+
+  majorSelect.innerHTML = `<option value="">학과 선택</option>`;
+  collegeData[college]?.forEach(major => {
+    const opt = document.createElement("option");
+    opt.value = major;
+    opt.innerText = major;
+    majorSelect.appendChild(opt);
+  });
+
+  generatePrompt();
+}
+
+function generatePrompt() {
+  const college = document.getElementById("collegeSelect")?.value || "University";
+  const major = document.getElementById("majorSelect")?.value || "Major";
+  const grammar = document.getElementById("grammarSelect")?.value || "Grammar";
+  const keyword = document.getElementById("keyword")?.value || "Topic";
+
+  const display = document.getElementById("promptDisplay");
+  if (!display) return;
+
+  display.innerText = `Act as a professor in ${major} (${college}).
+Create example sentences using "${grammar}" about "${keyword}".`;
+}
+
+/* ===============================
+   과제 제출
 ================================ */
 function openWeekAssignment(week) {
   document.getElementById("week-list-view").style.display = "none";
   document.getElementById("assignment-detail-view").style.display = "block";
-
   document.getElementById("currentWeekTitle").innerText = `Week ${week.id}`;
   document.getElementById("currentWeekTopic").innerText = week.topic;
-
   loadGiscus(`week-${week.id}`);
 }
 
-/* ===============================
-   목록으로 돌아가기
-================================ */
 function backToWeekList() {
   document.getElementById("assignment-detail-view").style.display = "none";
   document.getElementById("week-list-view").style.display = "block";
-
-  const container = document.querySelector(".giscus-container");
-  if (container) container.innerHTML = "";
+  document.querySelector(".giscus-container").innerHTML = "";
 }
 
 /* ===============================
-   Giscus 로드
+   Giscus
 ================================ */
 function loadGiscus(term) {
   const container = document.querySelector(".giscus-container");
-  container.innerHTML = "";
+  if (!container) return;
 
+  container.innerHTML = "";
   const script = document.createElement("script");
   script.src = "https://giscus.app/client.js";
   script.setAttribute("data-repo", GISCUS_REPO);
@@ -99,9 +138,7 @@ function loadGiscus(term) {
   script.setAttribute("data-mapping", "specific");
   script.setAttribute("data-term", term);
   script.setAttribute("data-lang", "ko");
-  script.setAttribute("data-theme", "light");
   script.async = true;
   script.crossOrigin = "anonymous";
-
   container.appendChild(script);
 }

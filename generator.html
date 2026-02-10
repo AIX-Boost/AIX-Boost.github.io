@@ -5,9 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 영문법 생성기 & 튜터</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css"> <style>
+    <link rel="stylesheet" href="style.css"> 
+    <style>
         /* [1. 생성기 UI 스타일] */
-        .prompt-box { background: #1a252f; padding: 15px; border-radius: 8px; margin-bottom: 10px; min-height: 60px; word-break: break-all; color: white; }
+        .prompt-box { 
+            background: #1a252f; 
+            padding: 10px 15px; 
+            border-radius: 8px; 
+            margin-bottom: 10px; 
+            min-height: 40px;      /* 박스 크기를 다시 작게 조정 */
+            word-break: break-all; 
+            color: white; 
+            font-size: 14px;
+        }
         #apiResponse { white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 8px; color: #333; min-height: 100px; line-height: 1.6; border: 1px solid #ddd; }
         .generate-btn { margin-top: 10px; background: #3498db; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .generate-btn:disabled { background: #95a5a6; }
@@ -17,7 +27,7 @@
         /* [2. 로봇 아이콘 및 챗봇창 스타일] */
         #chatbot-launcher {
             position: fixed;
-            bottom: 90px; /* 하단 네비바 위 */
+            bottom: 90px;
             right: 25px;
             width: 65px;
             height: 65px;
@@ -43,7 +53,7 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            display: none; /* 초기 상태 숨김 */
+            display: none; 
             z-index: 9999;
             overflow: hidden;
             border: 1px solid #eee;
@@ -65,36 +75,34 @@
         </nav>
     </header>
 
-   <div class="container">
-    <div class="panel">
-        <h3><i class="fa-solid fa-sliders"></i> 학습 조건 설정</h3>
-        
-        <label>단과대학</label>
-        <select id="collegeSelect" onchange="updateMajors()">
-            <option value="">선택하세요</option>
-        </select>
-        
-        <label>학과</label>
-        <select id="majorSelect" onchange="generatePrompt()">
-            <option value="">선택하세요</option>
-        </select>
-        
-        <label>문법 주제</label>
-        <select id="grammarSelect" onchange="generatePrompt()">
-            <option value="Passive Voice">수동태 (Passive Voice)</option>
-            <option value="Relative Clauses">관계대명사</option>
-            <option value="To-Infinitive">To 부정사</option>
-        </select>
-        
-        <label>키워드</label>
-        <input type="text" id="keyword" placeholder="예: 데이터, 세포..." oninput="generatePrompt()">
-    </div>
-</div>
+    <div class="container">
+        <div class="panel">
+            <h3><i class="fa-solid fa-sliders"></i> 학습 조건 설정</h3>
+            <label>단과대학</label>
+            <select id="collegeSelect" onchange="updateMajors()">
+                <option value="">선택하세요</option>
+            </select>
+            
+            <label>학과</label>
+            <select id="majorSelect" onchange="generatePrompt()">
+                <option value="">선택하세요</option>
+            </select>
+            
+            <label>문법 주제</label>
+            <select id="grammarSelect" onchange="generatePrompt()">
+                <option value="Passive Voice">수동태 (Passive Voice)</option>
+                <option value="Relative Clauses">관계대명사</option>
+                <option value="To-Infinitive">To 부정사</option>
+            </select>
+            
+            <label>키워드</label>
+            <input type="text" id="keyword" placeholder="예: 데이터, 세포..." oninput="generatePrompt()">
+        </div>
 
         <div class="panel" style="background:#2c3e50; color:white;">
             <h3><i class="fa-solid fa-terminal"></i> AI 프롬프트</h3>
             <div id="promptDisplay" class="prompt-box">조건을 선택하세요...</div>
-            <button class="copy-btn">프롬프트 복사</button>
+            <button class="copy-btn" onclick="copyPrompt()">프롬프트 복사</button>
             <button id="generateBtn" class="generate-btn" onclick="askGemini()">
                 <i class="fa-solid fa-paper-plane"></i> AI에게 생성 요청하기
             </button>
@@ -128,8 +136,8 @@
         <a href="textbook.html" class="b-item"><i class="fa-solid fa-book"></i> 교재</a>
     </nav>
 
-    <script src="script.js"></script> <script>
-        // 챗봇창 토글 함수
+    <script src="script.js"></script> 
+    <script>
         function toggleChatbot() {
             const container = document.getElementById('chatbot-container');
             const isHidden = container.style.display === 'none' || container.style.display === '';

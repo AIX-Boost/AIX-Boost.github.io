@@ -23,8 +23,19 @@ const weeks = [
   { id: 2, title: "명사와 관사 바로 쓰기", topic: "명사/관사(Noun/Article)" },
   { id: 3, title: "시제의 이해 (현재/과거/미래)", topic: "시제(Tense)" },
   { id: 4, title: "수동태의 활용 (Passive Voice)", topic: "수동태(Passive Voice)" },
-  { id: 5, title: "To 부정사의 명사적 용법", topic: "To 부정사(To-Infinitive)" }
+  { id: 5, title: "To 부정사의 명사적 용법", topic: "To 부정사(To-Infinitive)" },
+  { id: 6, title: "동명사와 현재분사 구분", topic: "동명사(Gerund)" },
+  { id: 7, title: "분사구문과 전공 텍스트 해석", topic: "분사구문(Participle)" },
+  { id: 8, title: "중간고사 대체 과제", topic: "중간 점검(Midterm)" },
+  { id: 9, title: "관계대명사 (주격/목적격)", topic: "관계대명사(Relative Clause)" },
+  { id: 10, title: "관계부사와 복합관계사", topic: "관계부사(Relative Adverb)" },
+  { id: 11, title: "가정법 과거와 과거완료", topic: "가정법(Subjunctive)" },
+  { id: 12, title: "접속사와 전치사의 차이", topic: "접속사(Conjunctions)" },
+  { id: 13, title: "비교구문과 최상급 표현", topic: "비교급(Comparison)" },
+  { id: 14, title: "특수구문 (도치/강조)", topic: "특수구문(Special Syntax)" },
+  { id: 15, title: "기말 프로젝트 제출", topic: "기말 과제(Final Project)" }
 ];
+
 
 /* ===============================
    페이지 로드
